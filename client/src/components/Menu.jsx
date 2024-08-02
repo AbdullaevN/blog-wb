@@ -51,7 +51,7 @@ const Menu = ({cat}) => {
     <div>
         <h1>pther posts</h1>
 
-        {posts.map(post => (
+        { Array.isArray(posts) && posts.map(post => (
             <div className='post' key={post.id}>
                 {/* <img src={post.img} alt="" /> */}
         <img src={`../public/upload/${post?.img}`} alt="" />
