@@ -6,13 +6,13 @@ import Menu from '../components/Menu'
 import axios from 'axios'
 import moment from 'moment/moment'
 import { AuthContext } from '../context/authContext'
+import CommentsSection from '../components/CommentsSection'
 
 const Single = () => {
   const [post, setPost] = useState({})
 
   const location = useLocation()
   const navigate = useNavigate()
-
   const postId = location.pathname.split("/")[2]
 
   const {currentUser} = useContext(AuthContext)
@@ -48,43 +48,41 @@ const Single = () => {
   }
 
   return (
-    <div className='single'>
-      
-      <div className="content">
-        <img src={`../public/upload/${post?.img}`} alt="" />
-        <div className='user'>
-       {
-        post.userImg ?  <img src={post.userImg} alt="" /> :  <img src="https://images.pexels.com/photos/7008010/pexels-photo-7008010.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="" />
-       }
-        <div className="info">
-          <span>{post?.username}</span>
-          <p>Posted {moment(post.date).fromNow()}</p>
+    <div className="single">
+    <div className="content">
+      <img src={`../public/upload/${post?.img}`} alt="" className="post-image" />
+      <div className="user-info">
+        {post.userImg ? (
+          <img src={post.userImg} alt="User" className="user-image" />
+        ) : (
+          <img
+            src="https://images.pexels.com/photos/7008010/pexels-photo-7008010.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+            alt="Default"
+            className="user-image"
+          />
+        )}
+        <div className="user-details">
+          <span className="username">{post?.username}</span>
+          <p className="post-date">Posted {moment(post.date).fromNow()}</p>
         </div>
-
-
-      {currentUser.username === post.username && 
-       <div className="edit">
-       {/* <Link to={`/white?edit=2`}  state={post}> */}
-       <Link to={`/write?edit=${postId}`  }    state={post}> 
-         <img src={Edit} alt="" />
-       </Link>
-       <Link to={`/`}>
-         <img onClick={handleDelete} src={one} alt="" />
-       </Link>
-    </div>
-      }
-        </div>
-
-      <h1>{post.title}</h1>
-            {/* {post.desc} */}
-            <p>{getText(post.desc)}</p>
-
+        {currentUser && currentUser.username === post.username && (
+          <div className="edit-options">
+            <Link to={`/write?edit=${postId}`} state={post}>
+              <img src={Edit} alt="Edit" className="icon" />
+            </Link>
+            <img src={one} alt="Delete" className="icon" onClick={handleDelete} />
+          </div>
+        )}
       </div>
-      <div className="menu">
-        <Menu cat={post.cat }/>
-      </div>
+      <h1 className="post-title">{post.title}</h1>
+      <p className="post-description">{getText(post.desc)}</p>
+      <CommentsSection />
     </div>
-  )
+    <div className="menu">
+      <Menu cat={post.cat} />
+    </div>
+  </div>
+);
 }
 
 export default Single

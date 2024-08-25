@@ -8,6 +8,12 @@ import Footer from './components/Footer';
 import Write from './pages/Write';
 
 import './style.scss'
+// import './style.css'
+
+import Profile from './pages/Profile';
+import ProfileEdit from './pages/ProfileEdit';
+import Ant from './pages/Ant';
+
 
 
 const Layout = () => {
@@ -36,12 +42,29 @@ const router = createBrowserRouter([
       {
         path:'/write',
         element: <Write/>
+      },
+      {
+        path:'/profile/:id',
+        element: <Profile/>
+      },
+      {
+        path:'/profile-edit/:id',
+        element: <ProfileEdit/>
+      },
+      {
+        path:'/register',
+        element: <Register/>
+      },
+      {
+        path:'/login',
+        element: <Login/>
       }
     ]
   },
   {
     path:'/test',
-    element: <div>this is test</div>
+    // element: <div>this is test</div>
+    element: <Ant/>
   },
   {
     path:'/register',

@@ -3,8 +3,34 @@ import jwt from 'jsonwebtoken'
 
 export const getPosts = (req,res) => {
     // res.json('from controller')
-    const q =  req.query.cat ? "SELECT * FROM posts WHERE cat=?"  :  "SELECT * FROM posts "
+    // const page = parseInt(req.query.page) || 1;
+    // const limit = parseInt(req.query.limit) || 4;
+    // const offset = (page - 1) * limit;
+    // Retrieve posts with pagination
+    // const q =  req.query.cat ? "SELECT * FROM posts WHERE cat=? LIMIT ? OFFSET ? "  :  "SELECT * FROM posts  LIMIT ? OFFSET ?"
+    const q =  req.query.cat ? "SELECT * FROM posts WHERE cat=?  "  :  "SELECT * FROM posts  "
 
+
+
+    // const searchQuery = req.query.q
+    // let query = "SELECT * FROM posts"
+    // if(searchQuery){
+    //     query += ` WHERE title LIKE ? `
+
+    // }
+
+    // db.query(query, [`%${searchQuery}%`], (err, data) => {
+    //     if(err) return res.status(500).json(err)
+    //         return res.status(200).json(data)
+    // })
+
+    // const params = req.query.cat ? [req.query.cat, limit, offset] : [limit, offset];
+
+       
+    // db.query(q, params, (err, data) => {
+    //     if (err) return res.status(500).json(err);
+    //     return res.status(200).json(data);
+    // });
     db.query(q, [req.query.cat] , (err,data) => {
         if(err) return res.send(err)
 

@@ -1,10 +1,17 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom';
+import ButtonAnt from '../components/Button';
 
 const Home = () => {
 
   const [posts, setPosts] = useState([])
+  const [valueSearch, setValueSearch] = useState("")
+  
+  // const [page, setPage] = useState(1);
+  // const [totalPages, setTotalPages] = useState(1);
+  
+
 
   const cat = useLocation().search
 
@@ -13,67 +20,75 @@ const Home = () => {
     const fetchData = async ()=>{
       try{
         const res = await axios.get(`/api/posts${cat}`)
+        // const res = await axios.get(`/api/posts${cat}&page=${page}&limit=4`);
+
         setPosts(res.data)
+        // setTotalPages(Math.ceil(res.data.total / 4)); // Assuming `total` is returned in the response
+
       }catch(e){
         console.log(e)
       }
     } 
     fetchData()
   },[cat])
-  // const posts = [
-  //     {
-  //       id: 1,
-  //       title: "Lorem ipsum dolor sit amet consectetur adipisicing elit",
-  //       desc: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. A possimus excepturi aliquid nihil cumque ipsam facere aperiam at! Ea dolorem ratione sit debitis deserunt repellendus numquam ab vel perspiciatis corporis!",
-  //       img: "https://images.pexels.com/photos/7008010/pexels-photo-7008010.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-  //     },
-  //     {
-  //       id: 2,
-  //       title: "Lorem ipsum dolor sit amet consectetur adipisicing elit",
-  //       desc: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. A possimus excepturi aliquid nihil cumque ipsam facere aperiam at! Ea dolorem ratione sit debitis deserunt repellendus numquam ab vel perspiciatis corporis!",
-  //       img: "https://images.pexels.com/photos/6489663/pexels-photo-6489663.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-  //     },
-  //     {
-  //       id: 3,
-  //       title: "Lorem ipsum dolor sit amet consectetur adipisicing elit",
-  //       desc: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. A possimus excepturi aliquid nihil cumque ipsam facere aperiam at! Ea dolorem ratione sit debitis deserunt repellendus numquam ab vel perspiciatis corporis!",
-  //       img: "https://images.pexels.com/photos/4230630/pexels-photo-4230630.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-  //     },
-  //     {
-  //       id: 4,
-  //       title: "Lorem ipsum dolor sit amet consectetur adipisicing elit",
-  //       desc: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. A possimus excepturi aliquid nihil cumque ipsam facere aperiam at! Ea dolorem ratione sit debitis deserunt repellendus numquam ab vel perspiciatis corporis!",
-  //       img: "https://images.pexels.com/photos/6157049/pexels-photo-6157049.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-  //     },
-  //   ];
 
-  const getText = (html) =>{
-    const doc = new DOMParser().parseFromString(html, "text/html")
-    return doc.body.textContent
+  const filteredBlog = posts.filter(post => {
+    return post.title.toLowerCase().includes(valueSearch.toLowerCase())
+  })
+ 
+  const getText = (html) => {
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    const textContent = doc.body.textContent || "";
+    const words = textContent.split(" ").slice(0, 15).join(" ");
+    return words + (textContent.split(" ").length > 15 ? "..." : "");
+  };
+
+  const hanldeSubmit = (e)=> {
+    e.preventDefault()
   }
 
   return (
-    <div className='home'>
-            <div className="posts">
-              { Array.isArray(posts) && posts.map(post => (
+    <div className='home '>
+            <div className="posts container-fluid">
+            <form  onSubmit={hanldeSubmit} method="post">
+          <div className="box">
+        <i className="fa-brands fa-searching"></i>
+        <input type="text" name="" placeholder='search'  onChange={(e) =>  setValueSearch(e.target.value)} />
+    </div>
+			</form>
+ 
+
+
+
+              { Array.isArray(filteredBlog) && filteredBlog.map(post => (
                 <div className="post" key={post.id}>
 
                     <div className='img'>
+                    {
+                      post.img? 
                     <img src={`../public/upload/${post.img}`}  alt="" />
+                      :
+                    <img src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSga6yisHc6htna4rQdhlFyffWiWv1a1bsC9g&s' />
+                    }
+
                     <div className='bg'></div>
                     </div>  
                     <div className="content">
                       <Link className='link' to={`/post/${post.id}`}>
-                      <h1>{post.title}</h1>
+                      <h1 className='content_link'>{post.title}</h1>
                       </Link>
                       <p>{getText(post.desc)}</p>
-                      <button>read more</button>
+                    <Link to={`/post/${post.id}`}>
+                    <ButtonAnt   title='Read more'/>
+                    </Link>
                       </div>                
                 </div>
               ))}
-            </div>
+                 
+      </div>
     </div>
   )
 }
 
 export default Home
+ 
